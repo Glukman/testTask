@@ -1,10 +1,10 @@
 var config = {
     // arbitrary number of images
     images: [
-        'http://images.gibson.com/Products/Electric-Guitars/2014/SGJ14/Gallery-Images/SGJ142VSC1-Finish-Shot.jpg',
-        'http://images.gibson.com.s3.amazonaws.com/Products/Electric-Guitars/2015/Midtown-Standard/DSDC15PBCH3_MAIN_HERO_01.jpg',
-        'http://images.gibson.com/Products/Electric-Guitars/Designer/Gibson-USA/Brendon-Small-Snow-Falcon-Flying-V/Splash-02.jpg',
-        'http://images.gibson.com/Products/Electric-Guitars/Designer/Gibson-USA/Lzzy-Hale-Explorer/Gallery-Images/DXLZYAWGH1-Finish-Shot.jpg'
+        'http://dailyiphoneblog.com/wp-content/uploads/2011/07/Tweetbot-voor-iPhone-icoon-500x300.jpg',
+        'http://www.anti-glamour.ru/wp-content/uploads/2011/08/carli1-500x300.jpg',
+        'http://img.awesomefoundation.org/q/src/https%3A%2F%2Faf-production.s3.amazonaws.com%2Fphotos%2Fimages%2F54276%2Foriginal%2Fgame_of_phones.jpeg/output/jpg/thumb/500x300%23',
+        'http://inspirationfeed.com/wp-content/uploads/2010/12/11619912483527701-500x300.jpg'
     ],
     // possible values: 'auto', 'manual', 'automanual'
     mode: 'auto',
