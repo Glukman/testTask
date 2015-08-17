@@ -1,0 +1,37 @@
+.main-wrap {
+    position: relative;
+    overflow: hidden;
+    height: 300px;
+    width: 500px;
+    margin: auto;
+    border: 2px solid black;
+    z-index: -99;
+}
+
+.swipe-page-left {
+    transform: translate(-100%, 0);
+    transform: translate3d(-100%, 0, 0);
+}
+
+.swipe-page-center {
+    transform: translate(0, 0);
+    transform: translate3d(0, 0, 0);
+}
+
+.swipe-page-right {
+    transform: translate(100%, 0);
+    transform: translate3d(100%, 0, 0);
+}
+
+.main-wrap > div {
+    position: inherit;
+    display: inline-block;
+    height: 300px;
+    width: 500px;
+}
+
+div > image {
+    position: inherit;
+    height: 100%;
+    width: 100%; 
+}
