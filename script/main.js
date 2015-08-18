@@ -17,8 +17,9 @@ var divManager = (function () {
 
     function divManager () {};
 
-    divManager.prototype.craeteDiv = function (url) {
+    divManager.prototype.craeteDiv = function (url, index) {
         div = document.createElement('div');
+        div.setAttribute('index', index);
         div.appendChild(this.createImage(url));
         return div;
     };
@@ -48,8 +49,8 @@ var Slider = (function () {
     Slider.prototype.mapImages = function (images) {
         var parent = document.getElementById('main');
 
-        Array.prototype.forEach.call(images, function (image) {
-             parent.appendChild(newDiv.craeteDiv(image));
+        Array.prototype.forEach.call(images, function (image, index) {
+             parent.appendChild(newDiv.craeteDiv(image, index));
         });
     };
     return Slider;
@@ -77,13 +78,26 @@ var slideAnimation = (function (_super) {
         // right to left +!
         delta = x - event.changedTouches[0].pageX;
 
-        delta > 0 && this.slideToLeft(event.target);
+        delta > 0 && this.slideToLeft(event.target.parentElement);
+        delta < 0 && this.slideToRight(event.target.parentElement);
 
     };
 
     slideAnimation.prototype.slideToLeft = function (target) {
-        target.className = 'bounceInRight';
-        debugger;
+        //target.className = 'slideToLeft';
+        target.style.transition = '0.5s';
+        target.style.marginLeft = '-500px';
+
+        //target.style = 'transition: 0.5s; margin-left: -500px;';
+    };
+
+    slideAnimation.prototype.slideToRight = function (target) {
+        var elIndex = document.getElementById('main').children[target.getAttribute('index') - 1];
+        //elIndex.className = "slideToRight";
+        elIndex.style.marginLeft = '0px';
+
+        var a = document.getElementById('main').children[document.getElementById('main').children.length-1];
+        
     };
 
     slideAnimation.prototype.end = function (e) {
