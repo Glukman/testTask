@@ -17,10 +17,13 @@ var divManager = (function () {
 
     function divManager () {};
 
-    divManager.prototype.craeteDiv = function (url, index) {
+    divManager.prototype.craeteDiv = function (images) {
         div = document.createElement('div');
-        div.setAttribute('index', index);
-        div.appendChild(this.createImage(url));
+        images.forEach(function (url) {
+            div.appendChild(this.createImage(url));
+        }, this);
+        div.id = 'imageWrap';
+        div.style.left = -500;
         return div;
     };
 
@@ -30,11 +33,22 @@ var divManager = (function () {
         return image;
     };
 
-    divManager.prototype.setToRight = function () {
+    divManager.prototype.replaceLeft = function (element) {
+        debugger;
+        //var first = element.firstChild;
+        element.parentNode.insertBefore(element, element.parentNode.children[element.parentNode.children.length - 1]);
+        // element.appendChild(first);
+        // element.removeChild(element.firstChild);
 
     };
 
-    divManager.prototype.setToLeft = function () {
+        divManager.prototype.replaceRight = function (element) {
+        debugger;
+        var first = element.firstChild;
+        //element.parentNode.removeChild(element);
+        //element.parentNode.insertBefore(first, element.parentNode.children[0]);
+         element.parentNode.appendChild(element);
+        element.parentNode.removeChild(element);
 
     };
 
@@ -47,61 +61,63 @@ var Slider = (function () {
     function Slider () {};
 
     Slider.prototype.mapImages = function (images) {
-        var parent = document.getElementById('main');
-
-        Array.prototype.forEach.call(images, function (image, index) {
-             parent.appendChild(newDiv.craeteDiv(image, index));
-        });
+        document.getElementById('main').appendChild(newDiv.craeteDiv(images));
     };
+
     return Slider;
 })();
 
 var slideAnimation = (function (_super) {
     __extends(slideAnimation, _super);
-    var started = false,
-        delta, touch, x, y;
+    var x;
+    var newDiv = new divManager();
     function slideAnimation (config) {
         this.mode = config.mode;
-        this.swipeSpeed = config.swipeSpeed;
+        this.swipeSpeed = config.swipeSpeed/1000 + 's';
         this.swipeDelay = config.swipeDelay;
+
+        this.start = this.start.bind(this);
+        this.move = this.move.bind(this);
+        this.end = this.end.bind(this);
     };
 
     slideAnimation.prototype.start = function (event) {
-        //поймать текущий эл-т и координаты
         x = event.changedTouches[0].pageX;
+        z.addEventListener('touchmove', this.move);
+
     };
 
     slideAnimation.prototype.move = function (event) {
-        //понять в какую сторону двигается
-        //описать эту анимацию
-        //начать двигать эл-т анимацией (писать в стайл)
-        // right to left +!
-        delta = x - event.changedTouches[0].pageX;
+        var delta = x - event.changedTouches[0].pageX;
 
-        delta > 0 && this.slideToLeft(event.target.parentElement);
-        delta < 0 && this.slideToRight(event.target.parentElement);
+        this.direction = (delta > 0); 
+        this.direction && this.slideToLeft(event.target.parentElement);
+        !this.direction && this.slideToRight(event.target.parentElement);
+        z.removeEventListener('touchmove', this.move);
 
     };
 
     slideAnimation.prototype.slideToLeft = function (target) {
-        //target.className = 'slideToLeft';
-        target.style.transition = '0.5s';
-        target.style.marginLeft = '-500px';
 
-        //target.style = 'transition: 0.5s; margin-left: -500px;';
+        var start = parseInt(target.style.left);
+
+        target.style.transition = this.swipeSpeed;
+        target.style.left = start - 500;
+
     };
 
     slideAnimation.prototype.slideToRight = function (target) {
-        var elIndex = document.getElementById('main').children[target.getAttribute('index') - 1];
-        //elIndex.className = "slideToRight";
-        elIndex.style.marginLeft = '0px';
+        var start = parseInt(target.style.left);
 
-        var a = document.getElementById('main').children[document.getElementById('main').children.length-1];
+        target.style.transition = this.swipeSpeed;
+        target.style.left = start + 500;
         
     };
 
-    slideAnimation.prototype.end = function (e) {
+    slideAnimation.prototype.end = function (event) {
         //взять первую и ебануть в зад или наоборот.
+        // this.direction && newDiv.replaceLeft(event.target);
+        // !this.direction && newDiv.replaceRight(event.target);
     };
 
     
@@ -114,8 +130,5 @@ slider.mapImages(config.images);
 var z = document.getElementById('main');
 
 z.addEventListener('touchstart', slider.start);
-z.addEventListener('touchmove', function (event) {
-    slider.move.call(slider, event);
-});
 z.addEventListener('touchend', slider.end);
 };

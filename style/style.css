@@ -26,6 +26,9 @@
 .main-wrap > div {
     height: 300px;
     width: 500px;
+    position: absolute;
+    /*margin-left: -500px;*/
+    display: inherit;
 }
 
 div > image {
