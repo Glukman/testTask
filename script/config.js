@@ -3,8 +3,7 @@ var config = {
     images: [
         'http://dailyiphoneblog.com/wp-content/uploads/2011/07/Tweetbot-voor-iPhone-icoon-500x300.jpg',
         'http://www.anti-glamour.ru/wp-content/uploads/2011/08/carli1-500x300.jpg',
-        'http://leanmagazine.net/wordpress/wp-content/uploads/2012/01/men-in-boxes-500x300.jpg',
-        'http://inspirationfeed.com/wp-content/uploads/2010/12/11619912483527701-500x300.jpg'
+        'http://leanmagazine.net/wordpress/wp-content/uploads/2012/01/men-in-boxes-500x300.jpg'
     ],
     // possible values: 'auto', 'manual', 'automanual'
     mode: 'auto',

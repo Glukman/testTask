@@ -16,10 +16,9 @@
     display: inherit;
 }
 
-.image {
-    position: absolute;
+div > image {
+    position: inherit;
     height: 100%;
     width: 100%; 
-    left: 500px;
 }
 

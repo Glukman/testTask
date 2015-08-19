@@ -12,35 +12,38 @@ var __extends = function (Child, Parent) {
     Child._super = Parent.prototype;
 };
 
+var __pxToInt = function (px) {
+    return parseInt(px) || 0;
+};
+
 var divManager = (function () {
     var div, image;   
 
     function divManager () {};
 
     divManager.prototype.craeteDiv = function (images) {
-        div = document.createElement('div');
-        images.forEach(function (url) {
-            div.appendChild(this.createImage(url));
+        div = document.createElement('ul');
+        images.forEach(function (url, i) {
+            div.appendChild(this.createImage(url, i));
         }, this);
         div.id = 'imageWrap';
         div.style.left = -500;
         return div;
     };
 
-    divManager.prototype.createImage = function (url) {
-        image = document.createElement('img');
+    divManager.prototype.createImage = function (url, i) {
+        image = document.createElement('li');
+        image.setAttribute('i', i+1);
         image.setAttribute('src', url);
-        image.setAttribute('class', 'image');
+        image.style.left = '0px';
         return image;
     };
 
     divManager.prototype.replaceLeft = function (element) {
-        element.style.left = 500;
         element.parentNode.appendChild(element.parentNode.firstChild);
     };
 
     divManager.prototype.replaceRight = function (element) {
-        element.style.left = 500;
         element.parentNode.insertBefore(element.parentNode.lastChild, element.parentNode.firstChild);
     };
 
@@ -58,11 +61,16 @@ var Slider = (function () {
 
     return Slider;
 })();
+// вынести абстрактный слайдер +
+// перехуярить на список вмето дивов
+// сделать пиксели в инт (хэлпер) +
 
-var slideAnimation = (function (_super) {
-    __extends(slideAnimation, _super);
-    var x;
+var abstractSlider = (function (_super) {
+
+    __extends(abstractSlider, _super);
+
     var newDiv = new divManager();
+
     function slideAnimation (config) {
         this.mode = config.mode;
         this.swipeSpeed = config.swipeSpeed/1000 + 's';
@@ -87,36 +95,54 @@ var slideAnimation = (function (_super) {
             return;
         };
         this.direction = (delta > 0); 
-        this.direction && this.slideToLeft(event.target);
-        !this.direction && this.slideToRight(event.target);
+        this.direction && this.next(event.target);
+        !this.direction && this.prev(event.target);
         z.removeEventListener('touchmove', this.move);
-
     };
 
-    slideAnimation.prototype.slideToLeft = function (target) {
-        
-        var start = parseInt(target.style.left) || 0;
+    return abstractSlider;
 
-        target.style.transition = this.swipeSpeed;
-        target.style.left = start - 500;
+})(Slider);
 
-    };
+var slideAnimation = (function (_super) {
+    __extends(slideAnimation, _super);
+    var x;
+    var newDiv = new divManager();
+    function slideAnimation (config) {
+        this.mode = config.mode;
+        this.swipeSpeed = config.swipeSpeed/1000 + 's';
+        this.swipeDelay = config.swipeDelay;
 
-    slideAnimation.prototype.slideToRight = function (target) {
-        var start = parseInt(target.style.left);
-
-        target.style.transition = this.swipeSpeed;
-        target.style.left = start + 500;
-    };
-
-    slideAnimation.prototype.end = function (event) {
-        this.direction && newDiv.replaceLeft(event.target);
-        !this.direction && newDiv.replaceRight(event.target);
+        this.start = this.start.bind(this);
+        this.move = this.move.bind(this);
+        this.end = this.end.bind(this);
     };
 
     
+    slideAnimation.prototype.next = function (target) {
+                this.direction && newDiv.replaceRight(event.target);
+        var start = parseInt(target.parentNode.style.left) || 0;
+
+       // target.parentNode.style.left = start - 500;
+
+    };
+
+    slideAnimation.prototype.prev = function (target) {
+                
+                !this.direction && newDiv.replaceLeft(event.target);
+        var start = parseInt(target.parentNode.style.left) || 0;
+
+        // target.parentNode.style.left = start + 500;        
+    };
+
+    slideAnimation.prototype.end = function (event) {
+
+
+    };
+ 
     return slideAnimation;
-})(Slider);
+
+})(abstractSlider);
 
 var slider = new slideAnimation(config);
 slider.mapImages(config.images);
