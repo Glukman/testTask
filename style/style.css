@@ -8,21 +8,6 @@
     display: flex;
 }
 
-.swipe-page-left {
-    transform: translate(-100%, 0);
-    transform: translate3d(-100%, 0, 0);
-}
-
-.swipe-page-center {
-    transform: translate(0, 0);
-    transform: translate3d(0, 0, 0);
-}
-
-.swipe-page-right {
-    transform: translate(100%, 0);
-    transform: translate3d(100%, 0, 0);
-}
-
 .main-wrap > div {
     height: 300px;
     width: 500px;
@@ -31,19 +16,10 @@
     display: inherit;
 }
 
-div > image {
-    position: inherit;
+.image {
+    position: absolute;
     height: 100%;
     width: 100%; 
-}
-
-.slideToLeft {
-    transition: 0.5s;
-    margin-left: -500px;
-}
-
-.slideToRight {
-    transition: 0.5s;
-    margin-left: 0px;
+    left: 500px;
 }
 

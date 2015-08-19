@@ -30,26 +30,18 @@ var divManager = (function () {
     divManager.prototype.createImage = function (url) {
         image = document.createElement('img');
         image.setAttribute('src', url);
+        image.setAttribute('class', 'image');
         return image;
     };
 
     divManager.prototype.replaceLeft = function (element) {
-        debugger;
-        //var first = element.firstChild;
-        element.parentNode.insertBefore(element, element.parentNode.children[element.parentNode.children.length - 1]);
-        // element.appendChild(first);
-        // element.removeChild(element.firstChild);
-
+        element.style.left = 500;
+        element.parentNode.appendChild(element.parentNode.firstChild);
     };
 
-        divManager.prototype.replaceRight = function (element) {
-        debugger;
-        var first = element.firstChild;
-        //element.parentNode.removeChild(element);
-        //element.parentNode.insertBefore(first, element.parentNode.children[0]);
-         element.parentNode.appendChild(element);
-        element.parentNode.removeChild(element);
-
+    divManager.prototype.replaceRight = function (element) {
+        element.style.left = 500;
+        element.parentNode.insertBefore(element.parentNode.lastChild, element.parentNode.firstChild);
     };
 
     return divManager;
@@ -90,16 +82,20 @@ var slideAnimation = (function (_super) {
     slideAnimation.prototype.move = function (event) {
         var delta = x - event.changedTouches[0].pageX;
 
+        if (Math.abs(delta) < 10) {
+            z.removeEventListener('touchmove', this.move);
+            return;
+        };
         this.direction = (delta > 0); 
-        this.direction && this.slideToLeft(event.target.parentElement);
-        !this.direction && this.slideToRight(event.target.parentElement);
+        this.direction && this.slideToLeft(event.target);
+        !this.direction && this.slideToRight(event.target);
         z.removeEventListener('touchmove', this.move);
 
     };
 
     slideAnimation.prototype.slideToLeft = function (target) {
-
-        var start = parseInt(target.style.left);
+        
+        var start = parseInt(target.style.left) || 0;
 
         target.style.transition = this.swipeSpeed;
         target.style.left = start - 500;
@@ -111,13 +107,11 @@ var slideAnimation = (function (_super) {
 
         target.style.transition = this.swipeSpeed;
         target.style.left = start + 500;
-        
     };
 
     slideAnimation.prototype.end = function (event) {
-        //взять первую и ебануть в зад или наоборот.
-        // this.direction && newDiv.replaceLeft(event.target);
-        // !this.direction && newDiv.replaceRight(event.target);
+        this.direction && newDiv.replaceLeft(event.target);
+        !this.direction && newDiv.replaceRight(event.target);
     };
 
     
