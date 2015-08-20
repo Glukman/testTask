@@ -54,8 +54,8 @@ var Slider = (function () {
 
     function Slider () {};
 
-    Slider.prototype.mapImages = function (images) {
-        document.getElementById('main').appendChild(newEl.craeteDiv(images));
+    Slider.prototype.mapImages = function (images, container) {
+        container.appendChild(newEl.craeteDiv(images));
     };
 
     return Slider;
@@ -71,7 +71,8 @@ var abstractSlider = (function (_super) {
 
     abstractSlider.prototype.start = function (event) {
         x = event.changedTouches[0].pageX;
-        z.addEventListener('touchmove', this.move);
+        fadeBox.addEventListener('touchmove', this.move);
+        sliderBox.addEventListener('touchmove', this.move);
 
     };
 
@@ -79,13 +80,15 @@ var abstractSlider = (function (_super) {
         var delta = x - event.changedTouches[0].pageX;
 
         if (Math.abs(delta) < 10) {
-            z.removeEventListener('touchmove', this.move);
+            fadeBox.removeEventListener('touchmove', this.move);
+            sliderBox.removeEventListener('touchmove', this.move);
             return;
         };
         this.direction = (delta > 0); 
         this.direction && this.next(event.target);
         !this.direction && this.prev(event.target);
-        z.removeEventListener('touchmove', this.move);
+        fadeBox.removeEventListener('touchmove', this.move);
+        sliderBox.removeEventListener('touchmove', this.move);
     };
 
     return abstractSlider;
@@ -123,6 +126,7 @@ var fade = (function (_super) {
     };
 
     fade.prototype.end = function (event) {};
+
     return fade;
 
 })(abstractSlider);
@@ -138,39 +142,42 @@ var slide = (function (_super) {
 
         this.start = this.start.bind(this);
         this.move = this.move.bind(this);
+        this.end = this.end.bind(this);
     };
 
     
     slide.prototype.next = function (target) {
-                this.direction && newDiv.replaceRight(event.target);
-        var start = parseInt(target.parentNode.style.left) || 0;
-
-       // target.parentNode.style.left = start - 500;
-
+        target.setAttribute('class', 'listLeft');
+        setTimeout(function () {
+            newEl.replaceRight(target.parentNode);
+            target.removeAttribute('class');
+        }, config.swipeSpeed);
     };
 
-    slide.prototype.prev = function (target) {
-                
-                !this.direction && newDiv.replaceLeft(event.target);
-        var start = parseInt(target.parentNode.style.left) || 0;
-
-        // target.parentNode.style.left = start + 500;        
+    slide.prototype.prev = function (target) {  
+        var prev = target.parentNode.parentNode.firstChild;
+        prev.setAttribute('class', 'clear');
+        newEl.replaceLeft(target.parentNode);
+        prev.setAttribute('class', 'listRight');    
     };
 
-    slide.prototype.end = function (event) {
-
-
-    };
+    slide.prototype.end = function (event) {};
  
     return slide;
 
 })(abstractSlider);
 
-var slider = new fade(config);
-slider.mapImages(config.images);
+var fadeSlider = new fade(config);
+var fadeBox = document.getElementById('fade');
+fadeSlider.mapImages(config.images, fadeBox);
 
-var z = document.getElementById('main');
+fadeBox.addEventListener('touchstart', fadeSlider.start);
+fadeBox.addEventListener('touchend', fadeSlider.end);
 
-z.addEventListener('touchstart', slider.start);
-z.addEventListener('touchend', slider.end);
+var slider = new slide(config);
+var sliderBox = document.getElementById('slide');
+slider.mapImages(config.images, sliderBox);
+
+sliderBox.addEventListener('touchstart', slider.start);
+sliderBox.addEventListener('touchend', slider.end);
 };

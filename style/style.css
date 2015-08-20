@@ -1,4 +1,4 @@
-.main-wrap {
+.fade {
     position: relative;
     overflow: hidden;
     height: 300px;
@@ -8,11 +8,21 @@
     display: flex;
 }
 
-.main-wrap > div {
+.slide {
+    position: relative;
+    overflow: hidden;
+    height: 300px;
+    width: 500px;
+    top: 40px;
+    margin: auto;
+    border: 2px solid black;
+    display: flex;
+}
+
+.fade > div {
     height: 300px;
     width: 500px;
     position: absolute;
-    /*margin-left: -500px;*/
     display: inherit;
 }
 
@@ -28,9 +38,21 @@ div > image {
     transition: 1s;
 }
 
+.listLeft {
+    position: absolute;
+    left: -500px;
+    transition: 1s;
+}
+
 .fadeOut {
     position: absolute;
-    animation-name: example;
+    animation-name: fade;
+    animation-duration: 1s;
+}
+
+.listRight {
+    position: absolute;
+    animation-name: list;
     animation-duration: 1s;
 }
 
@@ -56,7 +78,12 @@ li {
     width: 100%; 
 }
 
-@keyframes example {
+@keyframes fade {
     from {opacity: 0;}
     to {opacity: 1;}
+}
+
+@keyframes list {
+    from {left: 1000px;}
+    to {left: 500px;}
 }
