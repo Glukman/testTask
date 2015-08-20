@@ -79,7 +79,7 @@ var abstractSlider = (function (_super) {
     abstractSlider.prototype.move = function (event) {
         var delta = x - event.changedTouches[0].pageX;
 
-        if (Math.abs(delta) < 10) {
+        if (Math.abs(delta) < 5) {
             fadeBox.removeEventListener('touchmove', this.move);
             sliderBox.removeEventListener('touchmove', this.move);
             return;
@@ -120,7 +120,7 @@ var fade = (function (_super) {
 
     fade.prototype.prev = function (target) {  
         var prev = target.parentNode.parentNode.firstChild;
-        prev.setAttribute('class', 'clear');
+        prev.setAttribute('class', 'clearFade');
         newEl.replaceLeft(target.parentNode);
         prev.setAttribute('class', 'fadeOut');    
     };
@@ -147,16 +147,16 @@ var slide = (function (_super) {
 
     
     slide.prototype.next = function (target) {
-        target.setAttribute('class', 'listLeft');
+        target.parentNode.setAttribute('class', 'listLeft');
         setTimeout(function () {
             newEl.replaceRight(target.parentNode);
-            target.removeAttribute('class');
-        }, config.swipeSpeed);
+            target.parentNode.removeAttribute('class');
+        }, 1000);
     };
 
     slide.prototype.prev = function (target) {  
         var prev = target.parentNode.parentNode.firstChild;
-        prev.setAttribute('class', 'clear');
+        prev.setAttribute('class', 'clearSlide');
         newEl.replaceLeft(target.parentNode);
         prev.setAttribute('class', 'listRight');    
     };

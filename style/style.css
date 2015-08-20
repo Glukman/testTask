@@ -40,8 +40,8 @@ div > image {
 
 .listLeft {
     position: absolute;
-    left: -500px;
-    transition: 1s;
+    animation-name: listLeft;
+    animation-duration: 1s;
 }
 
 .fadeOut {
@@ -52,12 +52,16 @@ div > image {
 
 .listRight {
     position: absolute;
-    animation-name: list;
+    animation-name: listRight;
     animation-duration: 1s;
 }
 
-.clear {
+.clearFade {
     opacity: 0;
+}
+
+.clearSlide {
+    left: -500px;
 }
 
 .image {
@@ -83,7 +87,13 @@ li {
     to {opacity: 1;}
 }
 
-@keyframes list {
-    from {left: 1000px;}
-    to {left: 500px;}
+@keyframes listRight {
+    from {left: -500px;}
+    to {left: 0px;}
+}
+
+
+@keyframes listLeft {
+    from {left: 0px;}
+    to {left: -500px;}
 }
