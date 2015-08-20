@@ -35,25 +35,25 @@ div > image {
 .fadeIn {
     position: absolute;
     opacity: 0;
-    transition: 1s;
+    transition: 0.5s;
 }
 
 .listLeft {
     position: absolute;
     animation-name: listLeft;
-    animation-duration: 1s;
+    animation-duration: 0.5s;
 }
 
 .fadeOut {
     position: absolute;
     animation-name: fade;
-    animation-duration: 1s;
+    animation-duration: 0.5s;
 }
 
 .listRight {
     position: absolute;
     animation-name: listRight;
-    animation-duration: 1s;
+    animation-duration: 0.5s;
 }
 
 .clearFade {
