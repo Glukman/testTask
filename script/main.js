@@ -33,9 +33,7 @@ var elManager = (function () {
     elManager.prototype.createImage = function (url, i) {
         li = document.createElement('li');
         image = document.createElement('img');
-        image.setAttribute('i', i+1);
         image.setAttribute('src', url);
-        li.style.zIndex = -i;
         li.appendChild(image);
         return li;
     };
@@ -69,14 +67,7 @@ var abstractSlider = (function (_super) {
 
     var newEl = new elManager();
 
-    function abstractSlider (config) {
-        this.mode = config.mode;
-        this.swipeSpeed = config.swipeSpeed/1000 + 's';
-        this.swipeDelay = config.swipeDelay;
-
-        this.start = this.start.bind(this);
-        this.move = this.move.bind(this);
-    };
+    function abstractSlider () {};
 
     abstractSlider.prototype.start = function (event) {
         x = event.changedTouches[0].pageX;
@@ -110,24 +101,28 @@ var fade = (function (_super) {
         this.swipeSpeed = config.swipeSpeed/1000 + 's';
         this.swipeDelay = config.swipeDelay;
 
-        this.move = this.next.bind(this);
-        this.end = this.prev.bind(this);
+        this.start = this.start.bind(this);
+        this.move = this.move.bind(this);
+        this.end = this.end.bind(this);
     };
 
     
     fade.prototype.next = function (target) {
-        debugger;
-        // this.direction && newDiv.replaceRight(event.target);
-        // var start = parseInt(target.parentNode.style.left) || 0;
+        target.setAttribute('class', 'fadeIn');
+        setTimeout(function () {
+            newEl.replaceRight(target.parentNode);
+            target.removeAttribute('class');
+        }, config.swipeSpeed);
     };
 
-    fade.prototype.prev = function (target) {     
-        // !this.direction && newDiv.replaceLeft(event.target);
-        // var start = parseInt(target.parentNode.style.left) || 0;        
+    fade.prototype.prev = function (target) {  
+        var prev = target.parentNode.parentNode.firstChild;
+        prev.setAttribute('class', 'clear');
+        newEl.replaceLeft(target.parentNode);
+        prev.setAttribute('class', 'fadeOut');    
     };
 
     fade.prototype.end = function (event) {};
- 
     return fade;
 
 })(abstractSlider);
@@ -141,8 +136,8 @@ var slide = (function (_super) {
         this.swipeSpeed = config.swipeSpeed/1000 + 's';
         this.swipeDelay = config.swipeDelay;
 
-        this.move = this.next.bind(this);
-        this.end = this.prev.bind(this);
+        this.start = this.start.bind(this);
+        this.move = this.move.bind(this);
     };
 
     

@@ -22,6 +22,22 @@ div > image {
     width: 100%; 
 }
 
+.fadeIn {
+    position: absolute;
+    opacity: 0;
+    transition: 1s;
+}
+
+.fadeOut {
+    position: absolute;
+    animation-name: example;
+    animation-duration: 1s;
+}
+
+.clear {
+    opacity: 0;
+}
+
 .image {
     position: absolute;
     background-repeat: no-repeat;
@@ -36,4 +52,11 @@ ul {
 li {
     list-style: none;
     position: absolute;
+    height: 100%;
+    width: 100%; 
+}
+
+@keyframes example {
+    from {opacity: 0;}
+    to {opacity: 1;}
 }
