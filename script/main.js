@@ -12,58 +12,94 @@ var __extends = function (Child, Parent) {
     Child._super = Parent.prototype;
 };
 
-var divManager = (function () {
-    var div, image;   
+var __pxToInt = function (px) {
+    return parseInt(px) || 0;
+};
 
-    function divManager () {};
+var elManager = (function () {
+    var ul, li, image;   
 
-    divManager.prototype.craeteDiv = function (images) {
-        div = document.createElement('div');
-        images.forEach(function (url) {
-            div.appendChild(this.createImage(url));
+    function elManager () {};
+
+    elManager.prototype.craeteDiv = function (images) {
+        ul = document.createElement('ul');
+        images.forEach(function (url, i) {
+            ul.appendChild(this.createImage(url, i));
         }, this);
-        div.id = 'imageWrap';
-        div.style.left = -500;
-        return div;
+        ul.id = 'imageWrap';
+        return ul;
     };
 
-    divManager.prototype.createImage = function (url) {
+    elManager.prototype.createImage = function (url, i) {
+        li = document.createElement('li');
         image = document.createElement('img');
         image.setAttribute('src', url);
-        image.setAttribute('class', 'image');
-        return image;
+        li.appendChild(image);
+        return li;
     };
 
-    divManager.prototype.replaceLeft = function (element) {
-        element.style.left = 500;
+    elManager.prototype.replaceLeft = function (element) {
         element.parentNode.appendChild(element.parentNode.firstChild);
     };
 
-    divManager.prototype.replaceRight = function (element) {
-        element.style.left = 500;
+    elManager.prototype.replaceRight = function (element) {
         element.parentNode.insertBefore(element.parentNode.lastChild, element.parentNode.firstChild);
     };
 
-    return divManager;
+    return elManager;
 })();
 
 var Slider = (function () {
-    var newDiv = new divManager();
+    var newEl = new elManager();
 
     function Slider () {};
 
-    Slider.prototype.mapImages = function (images) {
-        document.getElementById('main').appendChild(newDiv.craeteDiv(images));
+    Slider.prototype.mapImages = function (images, container) {
+        container.appendChild(newEl.craeteDiv(images));
     };
 
     return Slider;
 })();
 
-var slideAnimation = (function (_super) {
-    __extends(slideAnimation, _super);
-    var x;
-    var newDiv = new divManager();
-    function slideAnimation (config) {
+var abstractSlider = (function (_super) {
+
+    __extends(abstractSlider, _super);
+
+    var newEl = new elManager();
+
+    function abstractSlider () {};
+
+    abstractSlider.prototype.start = function (event) {
+        x = event.changedTouches[0].pageX;
+        fadeBox.addEventListener('touchmove', this.move);
+        sliderBox.addEventListener('touchmove', this.move);
+
+    };
+
+    abstractSlider.prototype.move = function (event) {
+        var delta = x - event.changedTouches[0].pageX;
+
+        if (Math.abs(delta) < 10) {
+            fadeBox.removeEventListener('touchmove', this.move);
+            sliderBox.removeEventListener('touchmove', this.move);
+            return;
+        };
+        this.direction = (delta > 0); 
+        this.direction && this.next(event.target);
+        !this.direction && this.prev(event.target);
+        fadeBox.removeEventListener('touchmove', this.move);
+        sliderBox.removeEventListener('touchmove', this.move);
+    };
+
+    return abstractSlider;
+
+})(Slider);
+
+var fade = (function (_super) {
+    __extends(fade, _super);
+    var newEl = new elManager();
+
+    function fade (config) {
         this.mode = config.mode;
         this.swipeSpeed = config.swipeSpeed/1000 + 's';
         this.swipeDelay = config.swipeDelay;
@@ -73,56 +109,75 @@ var slideAnimation = (function (_super) {
         this.end = this.end.bind(this);
     };
 
-    slideAnimation.prototype.start = function (event) {
-        x = event.changedTouches[0].pageX;
-        z.addEventListener('touchmove', this.move);
-
+    
+    fade.prototype.next = function (target) {
+        target.setAttribute('class', 'fadeIn');
+        setTimeout(function () {
+            newEl.replaceRight(target.parentNode);
+            target.removeAttribute('class');
+        }, config.swipeSpeed);
     };
 
-    slideAnimation.prototype.move = function (event) {
-        var delta = x - event.changedTouches[0].pageX;
-
-        if (Math.abs(delta) < 10) {
-            z.removeEventListener('touchmove', this.move);
-            return;
-        };
-        this.direction = (delta > 0); 
-        this.direction && this.slideToLeft(event.target);
-        !this.direction && this.slideToRight(event.target);
-        z.removeEventListener('touchmove', this.move);
-
+    fade.prototype.prev = function (target) {  
+        var prev = target.parentNode.parentNode.firstChild;
+        prev.setAttribute('class', 'clear');
+        newEl.replaceLeft(target.parentNode);
+        prev.setAttribute('class', 'fadeOut');    
     };
 
-    slideAnimation.prototype.slideToLeft = function (target) {
-        
-        var start = parseInt(target.style.left) || 0;
+    fade.prototype.end = function (event) {};
 
-        target.style.transition = this.swipeSpeed;
-        target.style.left = start - 500;
+    return fade;
 
-    };
+})(abstractSlider);
 
-    slideAnimation.prototype.slideToRight = function (target) {
-        var start = parseInt(target.style.left);
+var slide = (function (_super) {
+    __extends(slide, _super);
+    var x;
+    var newEl = new elManager();
+    function slide (config) {
+        this.mode = config.mode;
+        this.swipeSpeed = config.swipeSpeed/1000 + 's';
+        this.swipeDelay = config.swipeDelay;
 
-        target.style.transition = this.swipeSpeed;
-        target.style.left = start + 500;
-    };
-
-    slideAnimation.prototype.end = function (event) {
-        this.direction && newDiv.replaceLeft(event.target);
-        !this.direction && newDiv.replaceRight(event.target);
+        this.start = this.start.bind(this);
+        this.move = this.move.bind(this);
+        this.end = this.end.bind(this);
     };
 
     
-    return slideAnimation;
-})(Slider);
+    slide.prototype.next = function (target) {
+        target.setAttribute('class', 'listLeft');
+        setTimeout(function () {
+            newEl.replaceRight(target.parentNode);
+            target.removeAttribute('class');
+        }, config.swipeSpeed);
+    };
 
-var slider = new slideAnimation(config);
-slider.mapImages(config.images);
+    slide.prototype.prev = function (target) {  
+        var prev = target.parentNode.parentNode.firstChild;
+        prev.setAttribute('class', 'clear');
+        newEl.replaceLeft(target.parentNode);
+        prev.setAttribute('class', 'listRight');    
+    };
 
-var z = document.getElementById('main');
+    slide.prototype.end = function (event) {};
+ 
+    return slide;
 
-z.addEventListener('touchstart', slider.start);
-z.addEventListener('touchend', slider.end);
+})(abstractSlider);
+
+var fadeSlider = new fade(config);
+var fadeBox = document.getElementById('fade');
+fadeSlider.mapImages(config.images, fadeBox);
+
+fadeBox.addEventListener('touchstart', fadeSlider.start);
+fadeBox.addEventListener('touchend', fadeSlider.end);
+
+var slider = new slide(config);
+var sliderBox = document.getElementById('slide');
+slider.mapImages(config.images, sliderBox);
+
+sliderBox.addEventListener('touchstart', slider.start);
+sliderBox.addEventListener('touchend', slider.end);
 };
