@@ -22,3 +22,18 @@ div > image {
     width: 100%; 
 }
 
+.image {
+    position: absolute;
+    background-repeat: no-repeat;
+    font-size: 150px;
+}
+
+ul {
+    padding: 0px;
+    margin: 0px;
+}
+
+li {
+    list-style: none;
+    position: absolute;
+}

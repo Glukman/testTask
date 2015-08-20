@@ -16,78 +16,75 @@ var __pxToInt = function (px) {
     return parseInt(px) || 0;
 };
 
-var divManager = (function () {
-    var div, image;   
+var elManager = (function () {
+    var ul, li, image;   
 
-    function divManager () {};
+    function elManager () {};
 
-    divManager.prototype.craeteDiv = function (images) {
-        div = document.createElement('ul');
+    elManager.prototype.craeteDiv = function (images) {
+        ul = document.createElement('ul');
         images.forEach(function (url, i) {
-            div.appendChild(this.createImage(url, i));
+            ul.appendChild(this.createImage(url, i));
         }, this);
-        div.id = 'imageWrap';
-        div.style.left = -500;
-        return div;
+        ul.id = 'imageWrap';
+        return ul;
     };
 
-    divManager.prototype.createImage = function (url, i) {
-        image = document.createElement('li');
+    elManager.prototype.createImage = function (url, i) {
+        li = document.createElement('li');
+        image = document.createElement('img');
         image.setAttribute('i', i+1);
         image.setAttribute('src', url);
-        image.style.left = '0px';
-        return image;
+        li.style.zIndex = -i;
+        li.appendChild(image);
+        return li;
     };
 
-    divManager.prototype.replaceLeft = function (element) {
+    elManager.prototype.replaceLeft = function (element) {
         element.parentNode.appendChild(element.parentNode.firstChild);
     };
 
-    divManager.prototype.replaceRight = function (element) {
+    elManager.prototype.replaceRight = function (element) {
         element.parentNode.insertBefore(element.parentNode.lastChild, element.parentNode.firstChild);
     };
 
-    return divManager;
+    return elManager;
 })();
 
 var Slider = (function () {
-    var newDiv = new divManager();
+    var newEl = new elManager();
 
     function Slider () {};
 
     Slider.prototype.mapImages = function (images) {
-        document.getElementById('main').appendChild(newDiv.craeteDiv(images));
+        document.getElementById('main').appendChild(newEl.craeteDiv(images));
     };
 
     return Slider;
 })();
-// вынести абстрактный слайдер +
-// перехуярить на список вмето дивов
-// сделать пиксели в инт (хэлпер) +
 
 var abstractSlider = (function (_super) {
 
     __extends(abstractSlider, _super);
 
-    var newDiv = new divManager();
+    var newEl = new elManager();
 
-    function slideAnimation (config) {
+    function abstractSlider (config) {
         this.mode = config.mode;
         this.swipeSpeed = config.swipeSpeed/1000 + 's';
         this.swipeDelay = config.swipeDelay;
 
         this.start = this.start.bind(this);
         this.move = this.move.bind(this);
-        this.end = this.end.bind(this);
     };
 
-    slideAnimation.prototype.start = function (event) {
+    abstractSlider.prototype.start = function (event) {
         x = event.changedTouches[0].pageX;
         z.addEventListener('touchmove', this.move);
 
     };
 
-    slideAnimation.prototype.move = function (event) {
+    abstractSlider.prototype.move = function (event) {
         var delta = x - event.changedTouches[0].pageX;
 
         if (Math.abs(delta) < 10) {
@@ -104,22 +101,52 @@ var abstractSlider = (function (_super) {
 
 })(Slider);
 
-var slideAnimation = (function (_super) {
-    __extends(slideAnimation, _super);
-    var x;
-    var newDiv = new divManager();
-    function slideAnimation (config) {
+var fade = (function (_super) {
+    __extends(fade, _super);
+    var newEl = new elManager();
+
+    function fade (config) {
         this.mode = config.mode;
         this.swipeSpeed = config.swipeSpeed/1000 + 's';
         this.swipeDelay = config.swipeDelay;
 
-        this.start = this.start.bind(this);
-        this.move = this.move.bind(this);
-        this.end = this.end.bind(this);
+        this.move = this.next.bind(this);
+        this.end = this.prev.bind(this);
     };
 
     
-    slideAnimation.prototype.next = function (target) {
+    fade.prototype.next = function (target) {
+        debugger;
+        // this.direction && newDiv.replaceRight(event.target);
+        // var start = parseInt(target.parentNode.style.left) || 0;
+    };
+
+    fade.prototype.prev = function (target) {     
+        // !this.direction && newDiv.replaceLeft(event.target);
+        // var start = parseInt(target.parentNode.style.left) || 0;        
+    };
+
+    fade.prototype.end = function (event) {};
+ 
+    return fade;
+
+})(abstractSlider);
+
+var slide = (function (_super) {
+    __extends(slide, _super);
+    var x;
+    var newEl = new elManager();
+    function slide (config) {
+        this.mode = config.mode;
+        this.swipeSpeed = config.swipeSpeed/1000 + 's';
+        this.swipeDelay = config.swipeDelay;
+
+        this.move = this.next.bind(this);
+        this.end = this.prev.bind(this);
+    };
+
+    
+    slide.prototype.next = function (target) {
                 this.direction && newDiv.replaceRight(event.target);
         var start = parseInt(target.parentNode.style.left) || 0;
 
@@ -127,7 +154,7 @@ var slideAnimation = (function (_super) {
 
     };
 
-    slideAnimation.prototype.prev = function (target) {
+    slide.prototype.prev = function (target) {
                 
                 !this.direction && newDiv.replaceLeft(event.target);
         var start = parseInt(target.parentNode.style.left) || 0;
@@ -135,16 +162,16 @@ var slideAnimation = (function (_super) {
         // target.parentNode.style.left = start + 500;        
     };
 
-    slideAnimation.prototype.end = function (event) {
+    slide.prototype.end = function (event) {
 
 
     };
  
-    return slideAnimation;
+    return slide;
 
 })(abstractSlider);
 
-var slider = new slideAnimation(config);
+var slider = new fade(config);
 slider.mapImages(config.images);
 
 var z = document.getElementById('main');
