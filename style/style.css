@@ -1,4 +1,4 @@
-.fade {
+.container {
     position: relative;
     overflow: hidden;
     height: 300px;
@@ -9,77 +9,39 @@
 }
 
 .slide {
-    position: relative;
-    overflow: hidden;
-    height: 300px;
-    width: 500px;
     top: 40px;
-    margin: auto;
-    border: 2px solid black;
-    display: flex;
-}
-
-.fade > div {
-    height: 300px;
-    width: 500px;
-    position: absolute;
-    display: inherit;
-}
-
-div > image {
-    position: inherit;
-    height: 100%;
-    width: 100%; 
 }
 
 .fadeIn {
-    position: absolute;
     opacity: 0;
-    transition: 0.5s;
 }
 
 .listLeft {
-    position: absolute;
     animation-name: listLeft;
-    animation-duration: 0.5s;
 }
 
 .fadeOut {
-    position: absolute;
     animation-name: fade;
-    animation-duration: 0.5s;
 }
 
 .listRight {
-    position: absolute;
     animation-name: listRight;
-    animation-duration: 0.5s;
-}
-
-.clearFade {
-    opacity: 0;
 }
 
 .clearSlide {
     left: -500px;
 }
 
-.image {
-    position: absolute;
-    background-repeat: no-repeat;
-    font-size: 150px;
-}
-
 ul {
-    padding: 0px;
-    margin: 0px;
+    padding: 0;
+    margin: 0;
 }
 
 li {
     list-style: none;
     position: absolute;
-    height: 100%;
-    width: 100%; 
+    height: 300px;
+    width: 500px;
 }
 
 @keyframes fade {
@@ -89,11 +51,11 @@ li {
 
 @keyframes listRight {
     from {left: -500px;}
-    to {left: 0px;}
+    to {left: 0;}
 }
 
 
 @keyframes listLeft {
-    from {left: 0px;}
+    from {left: 0;}
     to {left: -500px;}
 }
