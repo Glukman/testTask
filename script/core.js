@@ -10,9 +10,9 @@ var Slider = (function () {
         this.initStyles();
         this.box.addEventListener('touchstart', this.start);
         this.box.addEventListener('mousedown', this.start);
-        if (this.config.mode === 'auto' || this.config.mode === 'automanual') {
+        if (modes.indexOf(this.config.mode) !== -1) {
             this[this.config.mode + 'Mode']();
-        };
+        }
     };
 
     Slider.prototype.mapImages = function (images, container) {
@@ -54,11 +54,10 @@ var abstractSlider = (function (_super) {
 
     abstractSlider.prototype.move = function (event) {
         var delta;
-        if (event.changedTouches && event.changedTouches[0].pageX) {
-            delta =  x - event.changedTouches[0].pageX;
-        } else {
-            delta = x - event.pageX;
-        }
+
+        delta = event.changedTouches && event.changedTouches[0].pageX ?
+            x - event.changedTouches[0].pageX :
+            x - event.pageX;
 
         this.checkMode();
         if (Math.abs(delta) < 5) {

@@ -17,3 +17,8 @@ var bind = function bind(func, context) {
         return func.apply(context, arguments);
     };
 };
+
+var modes = [
+    'auto',
+    'automanual'
+];
