@@ -26,7 +26,6 @@ var domManager = (function () {
     domManager.prototype.applyStyles = function (speed) {
         var style = '.transitionSpeed \n{\ntransition: ' + speed/1000 + 's \n}\n .animationSpeed \n \ {' +
             '\nanimation-duration: ' + speed/1000 + 's\n}';
-        debugger;
         var element = document.querySelector('style');
         element.innerHTML = style;
     };

@@ -1,8 +1,8 @@
 .container {
     position: relative;
     overflow: hidden;
-    height: 300px;
-    width: 500px;
+    height: 60px;
+    width: 100px;
     margin: auto;
     border: 2px solid black;
     display: flex;
@@ -40,8 +40,13 @@ ul {
 li {
     list-style: none;
     position: absolute;
-    height: 300px;
-    width: 500px;
+    height: 60px;
+    width: 100px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
 }
 
 @keyframes fade {
