@@ -1,9 +1,9 @@
-var domManager = (function () {
+var DomManager = (function () {
     var ul, li, image;
 
-    function domManager () {}
+    function DomManager () {}
 
-    domManager.prototype.craeteDiv = function (images) {
+    DomManager.prototype.craeteUl = function (images) {
         ul = document.createElement('ul');
         images.forEach(function (url) {
             ul.appendChild(this.createImage(url));
@@ -12,7 +12,7 @@ var domManager = (function () {
         return ul;
     };
 
-    domManager.prototype.createImage = function (url) {
+    DomManager.prototype.createImage = function (url) {
         li = document.createElement('li');
         image = document.createElement('img');
         image.setAttribute('src', url);
@@ -23,20 +23,20 @@ var domManager = (function () {
         return li;
     };
 
-    domManager.prototype.applyStyles = function (speed) {
-        var style = '.transitionSpeed \n{\ntransition: ' + speed/1000 + 's \n}\n .animationSpeed \n \ {' +
-            '\nanimation-duration: ' + speed/1000 + 's\n}';
-        var element = document.querySelector('style');
-        element.innerHTML = style;
+    DomManager.prototype.applyStyles = function (speed) {
+        var MILISECONDS = 1000,
+        element = document.querySelector('style');
+        element.innerHTML = '.transitionSpeed \n{\ntransition: ' + speed/MILISECONDS + 's \n}\n .animationSpeed \n \ {' +
+            '\nanimation-duration: ' + speed/MILISECONDS + 's\n}';
     };
 
-    domManager.prototype.replaceLeft = function (element) {
+    DomManager.prototype.replaceLeft = function (element) {
         element.parentNode.appendChild(element.parentNode.firstChild);
     };
 
-    domManager.prototype.replaceRight = function (element) {
+    DomManager.prototype.replaceRight = function (element) {
         element.parentNode.insertBefore(element.parentNode.lastChild, element.parentNode.firstChild);
     };
 
-    return domManager;
+    return DomManager;
 })();

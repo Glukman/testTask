@@ -1,5 +1,5 @@
 var Slider = (function () {
-    var dom = new domManager();
+    var dom = new DomManager();
 
     function Slider () {};
 
@@ -16,7 +16,7 @@ var Slider = (function () {
     };
 
     Slider.prototype.mapImages = function (images, container) {
-        container.appendChild(dom.craeteDiv(images));
+        container.appendChild(dom.craeteUl(images));
     };
 
     Slider.prototype.initStyles = function () {
@@ -40,44 +40,53 @@ var Slider = (function () {
     return Slider;
 })();
 
-var abstractSlider = (function (_super) {
+var AbstractSlider = (function (_super) {
 
-    __extends(abstractSlider, _super);
+    __extends(AbstractSlider, _super);
     var x;
-    function abstractSlider () {};
+    function AbstractSlider () {};
 
-    abstractSlider.prototype.start = function (event) {
-        x = event.pageX || event.changedTouches[0].pageX;
-        this.box.addEventListener('touchmove', this.move);
-        this.box.addEventListener('mousemove', this.move);
+    AbstractSlider.prototype.removeListeners = function () {
+        this.box.removeEventListener('touchmove', this.move);
+        this.box.removeEventListener('mousemove', this.move);
     };
 
-    abstractSlider.prototype.move = function (event) {
+    AbstractSlider.prototype.coundDelta = function () {
         var delta;
 
         delta = event.changedTouches && event.changedTouches[0].pageX ?
             x - event.changedTouches[0].pageX :
             x - event.pageX;
 
-        this.checkMode();
         if (Math.abs(delta) < 5) {
             this.box.removeEventListener('touchmove', this.move);
             return;
         };
-        this.direction = (delta > 0);
-        this.direction && this.next(event.target);
-        !this.direction && this.prev(event.target);
-        this.box.removeEventListener('touchmove', this.move);
-        this.box.removeEventListener('mousemove', this.move);
+
+        return delta > 0;
     };
 
-    abstractSlider.prototype.checkMode = function () {
+    AbstractSlider.prototype.start = function (event) {
+        x = event.pageX || event.changedTouches[0].pageX;
+        this.box.addEventListener('touchmove', this.move);
+        this.box.addEventListener('mousemove', this.move);
+    };
+
+    AbstractSlider.prototype.move = function (event) {
+        this.checkMode();
+        this.direction = this.coundDelta();
+        this.direction && this.next(event.target);
+        !this.direction && this.prev(event.target);
+        this.removeListeners();
+    };
+
+    AbstractSlider.prototype.checkMode = function () {
         if (this.config.mode === 'automanual') {
             this.interval && clearInterval(this.interval);
             this.automanualMode();
         }
     };
 
-    return abstractSlider;
+    return AbstractSlider;
 
 })(Slider);
